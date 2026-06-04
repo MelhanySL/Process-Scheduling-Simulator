@@ -59,7 +59,7 @@ Para compilar y ejecutar este proyecto localmente, necesitas tener instalado un 
 
 #### 1. Clonar el repositorio
 ```bash
-git clone [https://github.com/MelhanySL/Process-Scheduling-Simulator.git](https://github.com/MelhanySL/Process-Scheduling-Simulator.git)
+git clone https://github.com/MelhanySL/Process-Scheduling-Simulator.git
 cd Process-Scheduling-Simulator
 ```
 #### 2. Instalar herramientas de desarrollo y Qt6
