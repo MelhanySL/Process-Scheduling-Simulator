@@ -304,33 +304,48 @@ void Scheduler::sort_ready_queue()
     {
     case Algorithm::FCFS:
         std::sort(ready_queue.begin(), ready_queue.end(), [](Process* a, Process* b)
-                  {
-                      return a->get_arrival_time() < b->get_arrival_time();
-                  });
+        {
+            return a->get_arrival_time() < b->get_arrival_time();
+        });
         break;
     case Algorithm::SJF:
         std::sort(ready_queue.begin(), ready_queue.end(), [](Process* a, Process* b)
-                  {
-                      return a->get_cpu_burst() < b->get_cpu_burst();
-                  });
+        {
+            if (a->get_cpu_burst() == b->get_cpu_burst()) {
+                return a->get_arrival_time() < b->get_arrival_time();
+            }
+            return a->get_cpu_burst() < b->get_cpu_burst();
+        });
         break;
     case Algorithm::PRIORITY_SCHEDULING:
         std::sort(ready_queue.begin(), ready_queue.end(), [](Process* a, Process* b)
-                  {
-                      return a->get_priority() > b->get_priority();
-                  });
+        {
+            if (a->get_priority() == b->get_priority())
+            {
+                return a->get_arrival_time() < b->get_arrival_time();
+            }
+            return a->get_priority() > b->get_priority();
+        });
         break;
     case Algorithm::PRIORITY_SCHEDULING_EXPULSIVE:
         std::sort(ready_queue.begin(), ready_queue.end(), [](Process* a, Process* b)
-                  {
-                      return a->get_priority() > b->get_priority();
-                  });
+        {
+            if (a->get_priority() == b->get_priority())
+            {
+                return a->get_arrival_time() < b->get_arrival_time();
+            }
+            return a->get_priority() > b->get_priority();
+        });
         break;
     case Algorithm::SRTF:
         std::sort(ready_queue.begin(), ready_queue.end(), [](Process* a, Process* b)
-                  {
-                      return a->get_remaining_cpu_time() < b->get_remaining_cpu_time();
-                  });
+        {
+            if (a->get_remaining_cpu_time() == b->get_remaining_cpu_time())
+            {
+                return a->get_arrival_time() < b->get_arrival_time();
+            }
+            return a->get_remaining_cpu_time() < b->get_remaining_cpu_time();
+        });
         break;
     default:
         break;

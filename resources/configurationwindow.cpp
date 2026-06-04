@@ -192,7 +192,7 @@ void ConfigurationWindow::changeEvent(QEvent *e)
 
     if (e->type() == QEvent::ActivationChange && this->isActiveWindow())
     {
-        if (myScheduler->get_all_processes().empty())
+        if (myScheduler->get_all_processes().empty() && this->id_contador_manual > 1)
         {
             this->id_contador_manual = 1;
             ui->lbl_id->setText(QString::number(this->id_contador_manual));
