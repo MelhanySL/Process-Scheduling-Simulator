@@ -185,3 +185,17 @@ void ConfigurationWindow::on_radioButton_manual_toggled(bool checked)
     }
 }
 
+// Esta función detecta cuando la ventana de configuración vuelve a estar activa y actualiza el contador del id para el widget manual
+void ConfigurationWindow::changeEvent(QEvent *e)
+{
+    QMainWindow::changeEvent(e);
+
+    if (e->type() == QEvent::ActivationChange && this->isActiveWindow())
+    {
+        if (myScheduler->get_all_processes().empty())
+        {
+            this->id_contador_manual = 1;
+            ui->lbl_id->setText(QString::number(this->id_contador_manual));
+        }
+    }
+}

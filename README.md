@@ -44,19 +44,35 @@ El código está organizado siguiendo principios de separación de responsabilid
 ---
 
 ## 🛠️ Requisitos e Instalación
+Para compilar y ejecutar este proyecto localmente, necesitas tener instalado un compilador compatible (MinGW en Windows, GCC en Linux) y las librerías del framework Qt (versión compatible con C++17 o superior).
 
-Para compilar y ejecutar este proyecto localmente, necesitas tener instalado:
-
-1.  **Qt Creator** (Versión compatible con C++17 o superior).
-2.  Un compilador compatible (MinGW en Windows, GCC en Linux o Clang en macOS).
-
-### Pasos para ejecutar:
-
+### Opción 1: Ejecución desde Qt Creator (Recomendado)
 1.  Clona o descarga este repositorio.
-2.  Abre Qt Creator.
-3.  Selecciona **Open Project** y busca el archivo `Process_Scheduling_Simulator.pro`.
-4.  Configura el kit de compilación de tu preferencia.
-5.  Haz clic derecho en la raíz del proyecto y selecciona **Run qmake** (o compila directamente con el icono del martillo 🔨).
-6.  Presiona el botón **Run** (Icono de Play verde ▶️).
+2. Abre Qt Creator.
+3. Selecciona **Open Project** y busca el archivo `Process_Scheduling_Simulator.pro`.
+4. Configura el kit de compilación de tu preferencia (ej. MinGW).
+5. Haz clic derecho en la raíz del proyecto y selecciona **Run qmake**.
+6. Presiona el botón **Run** (Icono de Play verde ▶️).
 
----
+
+### Opción 2: Compilación desde la Terminal (Linux)
+
+#### 1. Clonar el repositorio
+```bash
+git clone [https://github.com/MelhanySL/Process-Scheduling-Simulator.git](https://github.com/MelhanySL/Process-Scheduling-Simulator.git)
+cd Process-Scheduling-Simulator
+```
+#### 2. Instalar herramientas de desarrollo y Qt6
+```bash
+sudo apt update && sudo apt install build-essential qt6-base-dev
+```
+#### 3. Compilar el proyecto
+```bash
+qmake Process_Scheduling_Simulator.pro
+make clean
+make -j4
+```
+#### 4. Ejecutar el simulador gráfico
+```bash
+./Process_Scheduling_Simulator
+```

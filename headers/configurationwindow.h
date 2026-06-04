@@ -35,6 +35,9 @@ private:
     Ui::ConfigurationWindow *ui;
     Scheduler *myScheduler;
     int id_contador_manual = 1;
+
+protected:
+    void changeEvent(QEvent *e) override; //Función que detecta cuando la ventana de configuración vuelve a estar activa
 };
 
 #endif // CONFIGURATIONWINDOW_H
