@@ -52,6 +52,12 @@ ConfigurationWindow::~ConfigurationWindow()
 // Guarda un proceso creado manualmente por el usuario
 void ConfigurationWindow::on_pushButton_save_process_clicked()
 {
+    int total_procesos = static_cast<int>(myScheduler->get_all_processes().size());
+    if (!myScheduler->get_all_processes().empty() && id_contador_manual <= total_procesos)
+    {
+        id_contador_manual = total_procesos + 1;
+    }
+
     int id = id_contador_manual;
     int cpu = ui->spinBox_cpu_burst->value();
     int io = ui->spinBox_io_burst->value();
@@ -67,10 +73,10 @@ void ConfigurationWindow::on_pushButton_save_process_clicked()
     Process nuevo_proceso(id, prioridad, llegada, cpu, io);
     myScheduler->add_process(nuevo_proceso);
 
-    ui->spinBox_cpu_burst->setValue(0);
+    ui->spinBox_cpu_burst->setValue(1);
     ui->spinBox_io_burst->setValue(0);
     ui->spinBox_arrival_time->setValue(0);
-    ui->spinBox_priority->setValue(0);
+    ui->spinBox_priority->setValue(1);
 
     id_contador_manual++;
 
@@ -164,6 +170,10 @@ void ConfigurationWindow::on_radioButton_random_toggled(bool checked)
 {
     if (checked)
     {
+        myScheduler->clear_all();
+        id_contador_manual = 1;
+        ui->lbl_id->setText(QString::number(id_contador_manual));
+
         ui->widget_manual->hide();
         ui->lbl_id->hide();
         ui->pushButton_save_process->hide();
@@ -177,6 +187,11 @@ void ConfigurationWindow::on_radioButton_manual_toggled(bool checked)
 {
     if (checked)
     {
+        ui->pushButton_save_process->setEnabled(true);
+        myScheduler->clear_all();
+        id_contador_manual = 1;
+        ui->lbl_id->setText(QString::number(id_contador_manual));
+
         ui->widget_manual->show();
         ui->lbl_id->show();
         ui->pushButton_save_process->show();
@@ -192,10 +207,11 @@ void ConfigurationWindow::changeEvent(QEvent *e)
 
     if (e->type() == QEvent::ActivationChange && this->isActiveWindow())
     {
-        if (myScheduler->get_all_processes().empty() && this->id_contador_manual > 1)
+        if (ui->radioButton_manual->isChecked())
         {
-            this->id_contador_manual = 1;
-            ui->lbl_id->setText(QString::number(this->id_contador_manual));
+            ui->pushButton_save_process->setEnabled(true);
+            id_contador_manual = static_cast<int>(myScheduler->get_all_processes().size()) + 1;
+            ui->lbl_id->setText(QString::number(id_contador_manual));
         }
     }
 }

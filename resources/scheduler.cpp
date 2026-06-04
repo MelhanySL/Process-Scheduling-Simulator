@@ -203,6 +203,8 @@ void Scheduler::check_cpu_completion()
         ready_queue.push_back(running_process);
         running_process = nullptr;
         current_quantum_ticks = 0;
+
+        sort_ready_queue();
     }
 }
 // Monitorea y despierta a los procesos de la cola de bloqueados
@@ -221,8 +223,17 @@ void Scheduler::check_io_completion()
 
         if(process->get_remaining_io_time() == 0)
         {
-            process->set_state(State::READY);
-            ready_queue.push_back(process);
+            if(process->get_remaining_cpu_time() == 0)
+            {
+                process->finish_process(global_clock);
+                process->set_state(State::TERMINATED);
+                terminated_processes.push_back(process);
+            }
+            else
+            {
+                process->set_state(State::READY);
+                ready_queue.push_back(process);
+            }
         }
         else
         {
@@ -230,9 +241,10 @@ void Scheduler::check_io_completion()
         }
         blocked_queue.pop();
     }
-
     blocked_queue = new_blocked_queue;
 }
+
+
 // Decide qué proceso pasa a RUNNING (Implementa lógica expulsiva para algoritmos expulsivos)
 void Scheduler::select_next_process()
 {
@@ -271,6 +283,8 @@ void Scheduler::select_next_process()
                 running_process = best_candidate;
                 ready_queue.erase(ready_queue.begin());
                 running_process->set_state(State::RUNNING);
+
+                sort_ready_queue();
             }
         }
         return;
@@ -420,11 +434,11 @@ void Scheduler::generate_random_processes(int count, int max_cpu, int max_io, in
 // Ejecuta un único paso elemental de reloj (Avanza 1 tick y corre todas las rutinas necesarias)
 void Scheduler::step()
 {
-    check_arrivals();
-    check_cpu_completion();
-    check_io_completion();
-    select_next_process();
     update_running_process();
+    check_arrivals();
+    check_io_completion();
+    check_cpu_completion();
+    select_next_process();
     global_clock++;
 }
 // Resetea los procesos y contadores manteniendo la lista base cargada para simular otro algoritmo
@@ -521,19 +535,18 @@ double Scheduler::get_avg_block_time() const
 // Tiempo promedio de retorno / respuesta total
 double Scheduler::get_avg_execution_time() const
 {
-    if(all_processes.empty())
+    if(terminated_processes.empty())
     {
         return 0.0;
     }
 
     double sum = 0.0;
 
-    for(auto& process : all_processes)
+    for(const auto& process : terminated_processes)
     {
-        double execution_time = 0;
-        execution_time = process.get_ending_time() - process.get_arrival_time();
+        double execution_time = process->get_ending_time() - process->get_arrival_time();
         sum += execution_time;
     }
 
-    return sum / all_processes.size();
+    return sum / terminated_processes.size();
 }
