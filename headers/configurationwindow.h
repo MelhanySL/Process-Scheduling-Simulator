@@ -31,6 +31,12 @@ private slots:
     void on_radioButton_random_toggled(bool checked);
     void on_radioButton_manual_toggled(bool checked);
 
+    void on_pushButton_csv_clicked();
+
+    void on_pushButton_txt_clicked();
+
+    void on_radioButton_toggled(bool checked);
+
 private:
     Ui::ConfigurationWindow *ui;
     Scheduler *myScheduler;

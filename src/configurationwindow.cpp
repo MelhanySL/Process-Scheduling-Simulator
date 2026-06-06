@@ -1,6 +1,12 @@
 #include "headers/configurationwindow.h"
 #include "ui_configurationwindow.h"
 
+#include <QFileDialog>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <algorithm>
+
 // Constructor: Inicializa la interfaz de configuración
 ConfigurationWindow::ConfigurationWindow(Scheduler *scheduler, QWidget *parent)
     : QMainWindow(parent)
@@ -168,6 +174,8 @@ void ConfigurationWindow::on_radioButton_random_toggled(bool checked)
         ui->pushButton_save_process->hide();
         ui->widget_random->show();
         ui->pushButton_start_simulation->hide();
+        ui->pushButton_csv->hide();
+        ui->pushButton_txt->hide();
     }
 }
 
@@ -186,6 +194,8 @@ void ConfigurationWindow::on_radioButton_manual_toggled(bool checked)
         ui->pushButton_save_process->show();
         ui->widget_random->hide();
         ui->pushButton_start_simulation->show();
+        ui->pushButton_csv->hide();
+        ui->pushButton_txt->hide();
     }
 }
 
@@ -204,3 +214,200 @@ void ConfigurationWindow::changeEvent(QEvent *e)
         }
     }
 }
+
+// Guarda procesos que vienen de un .csv
+void ConfigurationWindow::on_pushButton_csv_clicked()
+{
+    QMessageBox::information
+    (
+        this,
+        tr("Formato Requerido"),
+        tr("Por favor, asegúrese de que su archivo siga exactamente este formato:\n\n"
+           "# CPU_Burst, IO_Burst, Arrival_Time, Priority\n"
+           "8, 2, 0, 3\n"
+           "4, 0, 1, 1\n\n"
+           "Nota: Si un proceso no requiere prioridad, coloque un 0 o 1 en su lugar.\n"
+           "Recuerde guardar el .csv como CSV(Archivo Separado por comas) por favor antes de subir")
+    );
+
+    QString rutaArchivo = QFileDialog::getOpenFileName(
+        this,
+        tr("Seleccionar archivo CSV de procesos"),
+        "",
+        tr("Archivos CSV (*.csv);;Todos los archivos (*)")
+        );
+
+    if (rutaArchivo.isEmpty())
+    {
+        return;
+    }
+
+    std::ifstream archivo(rutaArchivo.toStdString());
+    if (!archivo.is_open())
+    {
+        QMessageBox::critical(this, tr("Error"), tr("No se pudo abrir el archivo."));
+        return;
+    }
+    myScheduler->clear_all();
+    std::string linea;
+    int procesos_cargados = 0;
+
+    while (std::getline(archivo, linea))
+    {
+        linea.erase(std::remove(linea.begin(), linea.end(), '\r'), linea.end());
+        linea.erase(std::remove(linea.begin(), linea.end(), ' '), linea.end());
+
+        std::replace(linea.begin(), linea.end(), ';', ',');
+
+        if (linea.empty() || linea.find('#') != std::string::npos || linea.find("CPU") != std::string::npos)
+        {
+            continue;
+        }
+
+        if (linea.empty() || linea[0] == '#')
+        {
+            continue;
+        }
+
+        std::stringstream ss(linea);
+        std::string valor;
+
+        int cpuBurst, ioBurst, arrivalTime, priority;
+
+        try
+        {
+            if (std::getline(ss, valor, ',')) cpuBurst = std::stoi(valor); else continue;
+            if (std::getline(ss, valor, ',')) ioBurst = std::stoi(valor); else continue;
+            if (std::getline(ss, valor, ',')) arrivalTime = std::stoi(valor); else continue;
+
+            if (std::getline(ss, valor))
+            {
+                valor.erase(std::remove(valor.begin(), valor.end(), ','), valor.end());
+
+                if (!valor.empty())
+                {
+                    priority = std::stoi(valor);
+                }
+                else
+                {
+                    priority = 1;
+                }
+            }
+            else
+            {
+                priority = 1;
+            }
+
+            procesos_cargados++;
+            Process process(procesos_cargados, priority, arrivalTime, cpuBurst, ioBurst);
+            myScheduler->add_process(process);
+        }
+        catch (const std::exception& e)
+        {
+            continue;
+        }
+    }
+
+    archivo.close();
+
+    QMessageBox::information(
+        this,
+        tr("Carga Exitosa"),
+        tr("Se han importado correctamente %1 procesos.").arg(procesos_cargados)
+        );
+}
+
+// Guarda procesos que vienen de un archivo .txt
+void ConfigurationWindow::on_pushButton_txt_clicked()
+{
+    QMessageBox::information
+        (
+        this,
+        tr("Formato Requerido"),
+        tr("Por favor, asegúrese de que su archivo siga exactamente este formato:\n\n"
+           "# CPU_Burst, IO_Burst, Arrival_Time, Priority\n"
+           "8, 2, 0, 3\n"
+           "4, 0, 1, 1\n\n"
+           "Nota: Si un proceso no requiere prioridad, coloque un 0 o 1 en su lugar.")
+    );
+
+    QString rutaArchivo = QFileDialog::getOpenFileName
+    (
+        this,
+        tr("Seleccionar archivo de procesos"),
+        "",
+        tr("Archivos de Texto (*txt);;Todos los archivos (*)")
+    );
+
+    if (rutaArchivo.isEmpty())
+    {
+        return;
+    }
+
+    std::ifstream archivo(rutaArchivo.toStdString());
+    if (!archivo.is_open())
+    {
+        QMessageBox::critical(this, tr("Error"), tr("No se pudo abrir el archivo seleccionado."));
+        return;
+    }
+
+    myScheduler->clear_all();
+    std::string linea;
+    int procesos_cargados = 0;
+
+    while (std::getline(archivo, linea))
+    {
+        linea.erase(std::remove(linea.begin(), linea.end(), '\r'), linea.end());
+        linea.erase(std::remove(linea.begin(), linea.end(), ' '), linea.end());
+        std::replace(linea.begin(), linea.end(), ';', ',');
+
+        if (linea.empty() || linea[0] == '#')
+        {
+            continue;
+        }
+
+        std::stringstream ss(linea);
+        std::string valor;
+
+        int cpuBurst, ioBurst, arrivalTime, priority;
+
+        if (std::getline(ss, valor, ',')) cpuBurst = std::stoi(valor); else continue;
+        if (std::getline(ss, valor, ',')) ioBurst = std::stoi(valor); else continue;
+        if (std::getline(ss, valor, ',')) arrivalTime = std::stoi(valor); else continue;
+
+        if (std::getline(ss, valor, ','))
+        {
+            priority = std::stoi(valor);
+        } else {
+            priority = 1;
+        }
+        procesos_cargados++;
+        Process process(procesos_cargados, priority, arrivalTime, cpuBurst, ioBurst);
+        myScheduler->add_process(process);
+    }
+
+    archivo.close();
+
+    QMessageBox::information(
+        this,
+        tr("Carga Exitosa"),
+        tr("Se han cargado correctamente %1 procesos desde el archivo.").arg(procesos_cargados)
+    );
+}
+
+
+void ConfigurationWindow::on_radioButton_toggled(bool checked)
+{
+    if (checked)
+    {
+        ui->pushButton_save_process->setEnabled(false);
+
+        ui->widget_manual->hide();
+        ui->pushButton_save_process->hide();
+        ui->widget_random->hide();
+        ui->pushButton_start_simulation->show();
+        ui->pushButton_csv->show();
+        ui->pushButton_txt->show();
+    }
+}
+
