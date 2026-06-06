@@ -7,12 +7,12 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    resources/configurationwindow.cpp \
-    resources/main.cpp \
-    resources/mainwindow.cpp \
-    resources/process.cpp \
-    resources/scheduler.cpp \
-    resources/simulationwindow.cpp
+    src/configurationwindow.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/process.cpp \
+    src/scheduler.cpp \
+    src/simulationwindow.cpp
 
 HEADERS += \
     headers/configurationwindow.h \

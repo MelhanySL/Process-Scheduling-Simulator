@@ -37,7 +37,7 @@ Este es un simulador interactivo de planificación de procesos desarrollado en *
 El código está organizado siguiendo principios de separación de responsabilidades para garantizar la portabilidad y limpieza del repositorio:
 
 * `headers/` -> Archivos de cabecera (`.h`) con la lógica del planificador (`scheduler.h`), procesos (`process.h`) y controladores de ventanas.
-* `resources/` -> Archivos fuente (`.cpp`) con la implementación de la lógica y eventos.
+* `src/` -> Archivos fuente (`.cpp`) con la implementación de la lógica y eventos.
 * `screens/` -> Archivos de diseño de interfaz de usuario (`.ui`) de Qt.
 * `Process_Scheduling_Simulator.pro` -> Archivos de configuración del proyecto para la compilación (qmake).
 
