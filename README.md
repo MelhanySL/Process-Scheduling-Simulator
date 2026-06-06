@@ -49,7 +49,7 @@ El proyecto incluye una carpeta llamada `test_data/` en la raíz del repositorio
 El sistema acepta archivos `.csv` y `.txt`. Los datos deben seguir estrictamente el siguiente orden estructural separado por comas:
 `CPU_Burst, IO_Burst, Arrival_Time, Priority`
 
-### Archivos Incluidos en `/tests`:
+### Archivos Incluidos en `/test_data`:
 1. **`ejemplo_1_csv.csv`**: Un conjunto estándar de 5 procesos con ráfagas mixtas de CPU y Entrada/Salida.
 2. **`ejemplo_1.txt`**: Un conjunto estándar de 5 procesos con ráfagas mixtas de CPU y Entrada/Salida.
 3. **`ejemplo_2.txt`**: Un conjunto 4 procesos con con arribos escalonados y ráfagas cortas concurrentes.
