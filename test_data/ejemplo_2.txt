@@ -1,0 +1,5 @@
+# CPU_Burst, IO_Burst, Arrival_Time, Priority
+10, 0, 0, 3
+2, 4, 2, 1
+1, 0, 4, 2
+4, 2, 5, 4
