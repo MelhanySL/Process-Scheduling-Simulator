@@ -8,18 +8,7 @@ ConfigurationWindow::ConfigurationWindow(Scheduler *scheduler, QWidget *parent)
     myScheduler(scheduler)
 {
     ui->setupUi(this);
-    this->setFixedSize(1250, 900);
     this->setAttribute(Qt::WA_DeleteOnClose);
-
-    QScrollArea *miScroll = ui->scrollArea;
-    miScroll->setWidgetResizable(true);
-    miScroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    miScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-
-    QScrollArea *miScroll2 = ui->scrollArea_2;
-    miScroll2->setWidgetResizable(true);
-    miScroll2->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    miScroll2->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     myScheduler->clear_all();
     // Valores predeterminados para experiencia de usuario

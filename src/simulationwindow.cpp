@@ -13,14 +13,6 @@ SimulationWindow::SimulationWindow(Scheduler *scheduler, QWidget *parent)
     ui->label->setText(titulo);
     this->setAttribute(Qt::WA_DeleteOnClose);
 
-    QScrollArea *miScroll = ui->scrollArea;
-    miScroll->setWidgetResizable(true);
-    miScroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    miScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    if (miScroll->widget())
-    {
-        miScroll->widget()->setMinimumSize(1200, 1200);
-    }
     simTimer = new QTimer(this);
     connect(simTimer, &QTimer::timeout, this, &SimulationWindow::autoStep);
     updateUI();
